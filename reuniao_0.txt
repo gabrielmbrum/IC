@@ -1,0 +1,42 @@
+1° transformada
+
+recorte de um artigo q eles estão produzindo (Leandro e lucas)
+
+ler o primero artigo (traduzir pro português)
+- distancia euclidiana para caluclo da imagem
+
+visando entender a metodologia de
+
+transformada de furrier
+domínio espacial para frequência
+
+transformado de curvlet
+
+rede complexa
+
+intensão: aplicação da transformada (comparação) | reproduzir essa metodologia para imagens médicas | aplicar modelo de classificação
+
+datasets já disponíveis
+
+
+arch CNN
+- restNET
+
+---
+
+transformada.pdf
+
+1° param: dist euclidiana (pode ser outro tipo de dist)
+	-> seria bom testar com distancia de minkowski
+
+2° param: raio
+	(outra maneira de capturar features diferentes)
+
+3° grau
+
+4° força
+
+---
+
+problemas
+ 
