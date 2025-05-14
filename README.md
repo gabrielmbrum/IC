@@ -10,7 +10,7 @@ probably, this work will make a transformation of medical images and test the cl
 Leandro showed three docs (transformada, article1, article2).
 :
 Tasks:
-- [ ] understand the 'transformada.pdf' (understand the methodology)
+- [x] understand the 'transformada.pdf' (understand the methodology)
 - [ ] read article1
 - [ ] read article2
 
