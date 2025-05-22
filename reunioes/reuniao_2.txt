@@ -1,0 +1,3 @@
+artigos com código fonte
+- conformer: github.com/pengzhiliang/Conformer.
+- data aug transf: https://github.com/LorisNanni/Feature-transforms-for-image-data-augmentation

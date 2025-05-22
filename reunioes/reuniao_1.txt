@@ -1,0 +1,22 @@
+dúvidas
+- no trabalho do ribas (article 1) ele modela as imagens em um SSN (spatial-spectral network)
+- citar detalhes de cada método de classificao (CNN e ViT)? aprofundar os estudos agora compensa?
+- modelos híbridos encontrados (CNN + transformer | Conformer, CTransCNN (multilable) )
+- variação de parametros da transformada seria para modificar a determinação de força de conexão entre os vértices? trocar a distancia euclidiana por de minkowski
+- deep learning? esses modelos são de aprendizado profundo?
+- citar na introdução que a transformada tambem supre essa necessidade de data augmentation
+
+objetivos
+- aplicação de transformadas
+---
+
+alterações na proposta
+- focar nas imagens histologicas
+- 
+
+
+etapas
+- revisao
+- data augmentation com as transformada
+- gan
+- treinamento com ambas técnicas de data augmentation
