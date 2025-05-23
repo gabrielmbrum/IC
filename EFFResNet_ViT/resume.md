@@ -47,4 +47,3 @@ A classificação automática de imagens médicas é essencial na medicina moder
 
 ## Palavras-chave
 *EfficientNet-B0*, *ResNet-50*, *Vision Transformer*, *Medical Imaging*, *Grad-CAM*, *Explainability*, *Deep Learning*
-

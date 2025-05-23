@@ -1,3 +1,8 @@
 artigos com código fonte
 - conformer: github.com/pengzhiliang/Conformer.
 - data aug transf: https://github.com/LorisNanni/Feature-transforms-for-image-data-augmentation
+- data aug gan: github.com/icai-uma/Enhancing-Classification-Performance-through-Synthetic-Data-Generation-with-GANs
+
+oq foi solicitado para melhorar (felipe me informou)
+- refinar a introdução (gerar mais fluidez)
+- caracterizar melhor a metodologia (ser mais preciso ao inves de justificar& +foco metodologico e -redundancia)
