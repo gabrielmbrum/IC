@@ -1,5 +1,9 @@
 # IC
 
-this project aims to test a hybrid model of medical image classiticator.
+**Título:** ?
+**Orientando:** Gabriel Martins Brum
+**Orientador:** Leandro Alves Neves
 
-it intends to get a better results by using a complex transform to data augmentation than a GAN data augmentation.
+### Resumo
+
+Esse projeto visa realizar uma análise da utilização de transformadas complexas como forma de aumento de dados para um modelo híbrido (CNN + Transformer) de classificação de imagens histológicas, além de realizar uma comparação com os resultados obtidos por meio do processo de aumento de dados por GANs.
