@@ -1,7 +1,9 @@
 # IC
 
 **Título:** ?
+
 **Orientando:** Gabriel Martins Brum
+
 **Orientador:** Leandro Alves Neves
 
 ### Resumo
