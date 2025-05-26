@@ -4,7 +4,7 @@
 
 propõe um método para análise de textura coloridas por aprendizado de representações _spatio-spectral_ a partir de um rede complexa utilizando RNN (Randomized Neural Network).
 
-modela-se a iamgem como uma rede complexa baseada no modelo SSN (_Spatio-Spectral Network_), que considera conexões na topologia para representar as características espaciais e padrões espectrais.
+modela-se a imagem como uma rede complexa baseada no modelo SSN (_Spatio-Spectral Network_), que considera conexões na topologia para representar as características espaciais e padrões espectrais.
 
 insight: características topológicas complexas da SSN podem ser incorporadas por um modelo de rede neural simples e rápido para a classificação de texturas coloridas.
 

@@ -5,4 +5,4 @@ artigos com código fonte
 
 oq foi solicitado para melhorar (felipe me informou)
 - refinar a introdução (gerar mais fluidez)
-- caracterizar melhor a metodologia (ser mais preciso ao inves de justificar& +foco metodologico e -redundancia)
+- caracterizar melhor a metodologia (ser mais preciso ao inves de justificar & +foco metodologico e -redundancia)
