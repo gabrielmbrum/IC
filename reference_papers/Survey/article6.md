@@ -46,8 +46,3 @@ Exemplos com sucesso incluem o uso de **DCGANs para gerar lesões hepáticas**, 
 ## 🔬 Conclusão
 
 O artigo reforça que *data augmentation* é fundamental para melhorar modelos de *deep learning*, especialmente em domínios com dados limitados como medicina. Técnicas baseadas em GANs, *feature space* e *meta-learning* representam fronteiras promissoras. O trabalho também evidencia a necessidade de métodos automatizados e específicos para cada domínio de aplicação.
-
----
-
-> **Relevância para sua IC**:  
-> O artigo serve como base sólida para justificar o uso de **novas estratégias de aumento de dados** como as transformações complexas. Ele evidencia que a busca por técnicas eficazes de *data augmentation* continua sendo um campo ativo e necessário, especialmente em **imagens médicas**, onde os dados rotulados são escassos e o ganho em desempenho é crítico.

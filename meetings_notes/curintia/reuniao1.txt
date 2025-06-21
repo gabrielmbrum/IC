@@ -1,0 +1,11 @@
+cronograma até dia 02/10
+
+interssecção 
+- data aug GAN
+
+data aug GAN
+- revisão bibliográfica (descobrir quais são as GANs / as melhores rsrs) -> deadline: 23/06
+- fazer implementação com dataset random -> deadline: 30/06
+- avaliar metricas e repetir ate resultado agradavel -> deadline: 09/07
+
+deadline1: 09/07

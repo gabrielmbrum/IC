@@ -1,0 +1,59 @@
+\documentclass[12pt,a4paper]{article}
+
+% Pacotes para o português.
+\usepackage[brazilian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{indentfirst}
+\usepackage{url}
+\usepackage{array}
+\usepackage[top=2cm, bottom=1.5cm, left=2.5cm, right=2cm]{geometry}
+\usepackage{multirow}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{caption}
+\usepackage{setspace}
+\usepackage{breakcites}
+\usepackage{float}
+\usepackage{times}
+\usepackage{lipsum}
+
+\usepackage{sectsty}
+\usepackage[compact]{titlesec}
+
+\sectionfont{\normalfont\normalsize\bfseries}
+\subsectionfont{\normalfont\normalsize\bfseries}
+\subsubsectionfont{\normalfont\normalsize\bfseries}
+
+% Comando para marcar o texto para revisão.
+\newcommand{\rev}[1]{\textcolor{red}{#1}}
+
+% Permite escrever aspas normais "text" em vez de ``text''
+\usepackage[autostyle]{csquotes}
+\MakeOuterQuote{"}
+
+\begin{document}
+
+\begin{center}
+    {\large \bfseries \centering Uso Combinado de Transformações Complexas e Modelos Híbridos na Classificação de Imagens Histológicas}
+\end{center}
+
+\input{introducao.tex}
+
+\input{objetivos}
+
+\input{metodologia}
+
+\input{plano}
+
+\input{resultados}
+
+\bibliographystyle{ieeetr}
+\bibliography{bibliografia.bib}
+
+
+\end{document}

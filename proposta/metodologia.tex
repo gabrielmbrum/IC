@@ -1,0 +1,80 @@
+\section{Metodologia}
+
+A pesquisa será conduzida em cinco etapas principais, conforme descritas a seguir.
+
+\subsection{Etapa 1 — Revisão Bibliográfica}
+
+Será realizada uma revisão sistemática da literatura sobre:
+(i) técnicas de aumento de dados baseadas em transformações matemáticas, com ênfase em transformações complexas;
+(ii) métodos de geração de dados sintéticos com GANs; e
+(iii) arquiteturas híbridas de classificação de imagens que integram CNNs e ViTs.
+Essa etapa fornecerá embasamento teórico para a definição e implementação dos métodos experimentais.
+
+\subsection{Etapa 2 — Geração de Dados com Transformações Complexas}
+
+Nesta etapa, será implementado um processo de aumento de dados baseado em transformações complexas, semelhante a abordagem proposta por Ribas et al. \cite{ribas2020fusion}, porém com o enfoque em geração de dados ao invés de extração de características. A metodologia consiste em modelar cada imagem como uma rede complexa, onde cada pixel é representado por um vértice e as conexões (arestas) são estabelecidas com base em um critério de vizinhança radial.
+
+Mais precisamente, dado um pixel \( i = (x_i, y_i) \) em uma imagem \( I \), ele é mapeado como um vértice \( v_i \in V \). Dois vértices \( v_i \) e \( v_j \) são conectados por uma aresta se a distância entre eles for menor que um raio \( r \) definido:  
+\[
+E = \{ \{v_i, v_j\} \mid d((x_i, y_i), (x_j, y_j)) < r \},
+\]
+em que \( d \) representa a métrica de distância utilizada. Inicialmente, será empregada a distância Euclidiana, mas também será avaliada a substituição por outras métricas, como a distância de Minkowski (com diferentes valores de \( p \)), com o objetivo de verificar o impacto dessa variação na geração de padrões texturais.
+
+O peso da aresta entre \( v_i \) e \( v_j \) é definido pela diferença absoluta entre as intensidades dos pixels:
+\[
+w_{ij} = |I(x_i, y_i) - I(x_j, y_j)|.
+\]
+
+A partir dessa modelagem, serão calculadas medidas topológicas locais, como grau e força dos vértices. Essas medidas serão então mapeadas de volta ao espaço da imagem, gerando novas versões da imagem original. Cada imagem transformada reflete uma configuração distinta de parâmetros da rede (como raio de conexão, tipo de métrica e limiar de aresta), permitindo a captura de padrões texturais em múltiplas escalas — raios menores realçam estruturas locais e raios maiores evidenciam padrões mais globais.
+
+O pipeline de geração será composto pelas seguintes etapas: (i) Conversão de imagens originais para escala de cinza; (ii) Definição de um conjunto de valores de raio \( r \in \{r_1, r_2, ..., r_n\} \); (iii) Variação da métrica de distância (ex.: Euclidiana, Minkowski); (iv) Modelagem de cada imagem como uma rede complexa para cada combinação de parâmetros; (v) Cálculo das medidas topológicas dos vértices (grau, força);  (vi) Mapeamento das medidas para o plano da imagem, resultando em novas imagens transformadas.
+
+As imagens transformadas serão incorporadas ao conjunto de treinamento, compondo uma base de dados aumentada que será utilizada nas etapas seguintes de treinamento do modelo. A diversidade introduzida pelas diferentes parametrizações pretende enriquecer a capacidade do modelo de aprender representações robustas e sensíveis às variações de textura das imagens histológicas.
+
+\subsection{Etapa 3 — Geração de Dados com GANs}
+
+Nesta etapa, serão geradas imagens sintéticas por meio de redes adversariais generativas (GANs), com o objetivo de expandir o conjunto de dados de imagens histológicas e mitigar o desbalanceamento entre classes. O procedimento será implementado utilizando o framework PyTorch, com base em arquiteturas de GAN reconhecidas na literatura por sua estabilidade e capacidade de gerar imagens realistas em contextos médicos, conforme discutido por Ruiz-Casado et al. \cite{ruiz2024gan}.
+
+Inicialmente, será selecionada uma ou mais variantes de GAN com base em critérios como compatibilidade com o conjunto de dados, disponibilidade de implementação e viabilidade de treinamento. As redes serão treinadas com o conjunto original de imagens, e as amostras geradas serão avaliadas quanto à qualidade visual e diversidade estatística.
+
+A métrica principal para avaliação será o \textit{Fréchet Inception Distance} (FID) \cite{heusel2018ganstrainedtimescaleupdate}, que compara as distribuições estatísticas das representações extraídas por uma rede Inception-v3 entre as imagens reais e as geradas. O cálculo será realizado com o pacote \texttt{pytorch-fid}. Apenas amostras oriundas de modelos com FID satisfatório serão incorporadas ao conjunto de dados final. Adicionalmente, poderá ser realizada uma inspeção visual amostral para verificar a plausibilidade morfológica das imagens geradas.
+
+As imagens sintéticas selecionadas serão rotuladas conforme a classe de origem e integradas ao conjunto de treinamento, garantindo o balanceamento entre as categorias. Esta abordagem servirá como base comparativa à técnica de aumento de dados por transformações complexas, permitindo avaliar o impacto relativo de diferentes estratégias de geração de dados na robustez do modelo híbrido de classificação proposto.
+
+
+\subsection{Etapa 4 — Treinamento do Modelo Híbrido (CNN + ViT)}
+
+Será utilizada uma arquitetura híbrida de classificação composta por módulos convolucionais (CNNs) e mecanismos de autoatenção baseados em Transformers (ViT), com o objetivo de explorar simultaneamente características locais e globais das imagens histológicas. Essa combinação busca integrar a capacidade das CNNs de extrair padrões espaciais de baixo nível com a habilidade dos Transformers em capturar dependências de longo alcance por meio da atenção.
+
+A escolha da arquitetura seguirá diretrizes da literatura, considerando modelos que realizam a fusão dessas duas abordagens de forma eficiente, como ilustrado em trabalhos recentes que integram convoluções com mecanismos de atenção, incluindo ResNet-ViT, EfficientNet-ViT e variantes baseadas em fusões adaptativas, como MedViT e outras propostas híbridas com acoplamento local-global \cite{peng2021conformerlocalfeaturescoupling, hussain2025effresnet, chen2023medvit}.
+
+Serão treinadas três versões distintas do modelo híbrido:
+\begin{itemize}
+    \item Utilizando apenas o conjunto de dados aumentado por transformações complexas;
+    \item Utilizando apenas o conjunto de dados aumentado por GANs;
+    \item Utilizando o conjunto combinado das duas estratégias de aumento de dados.
+\end{itemize}
+
+O treinamento será conduzido com base em boas práticas da literatura de aprendizado profundo. A divisão do conjunto de dados será realizada de forma estratificada entre treino, validação e teste, garantindo o balanceamento das classes. Os hiperparâmetros serão ajustados por meio de validação cruzada, e serão utilizadas funções de perda apropriadas para tarefas de classificação multiclasse (como a \textit{cross-entropy loss}). O otimizador Adam será empregado com configuração adequada da taxa de aprendizado, e serão aplicadas técnicas de regularização, como \textit{dropout} e \textit{early stopping}, para mitigar o risco de sobreajuste e melhorar a capacidade de generalização.
+
+O desempenho dos modelos será avaliado com base nas métricas estabelecidas na etapa de análise de resultados, permitindo uma comparação objetiva entre as diferentes abordagens de aumento de dados aplicadas ao treinamento do modelo híbrido.
+
+
+\subsection{Etapa 5 — Avaliação e Comparação de Resultados}
+
+Serão utilizados os seguintes indicadores de desempenho: acurácia, precisão, \textit{recall}, F1-score e AUC-ROC.
+A análise incluirá:
+
+\begin{itemize}
+    
+    \item Comparação quantitativa dos desempenhos obtidos pelos modelos treinados com diferentes estratégias de aumento de dados;
+
+    \item Avaliação do impacto da variação dos parâmetros das transformações complexas no desempenho do modelo;
+
+    \item Análise qualitativa das imagens sintéticas geradas pelas GANs;
+
+    \item Discussão das limitações computacionais e da generalização dos modelos.
+
+\end{itemize}
+
+A análise estatística dos resultados será conduzida por meio de testes de significância apropriados (ex: teste de Wilcoxon para comparação pareada), com o objetivo de identificar diferenças relevantes entre as abordagens.
