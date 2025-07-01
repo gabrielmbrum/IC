@@ -56,65 +56,72 @@ confusing
 
 ![fig 2](image-1.png)
 
----
+#### *Generating Synthetic Liver Lesions*
+
+they augmented in two ways:
+1 - classic ways (cited above)
+2 - synthesis of new examples using generative models
+
+##### A. *Classic Data Augmentation*
+
+even in small CNN there is the danger of overfitting.
+classic techniques: translation, rotation, scaling and flipping.
+
+each lesion ROI:
+1) *N~rot~* times at random angles $\theta$ = [0°,...,180°]
+2) flipped *N~flip~* times (up-down, left-right)
+3) translated *N~trans~* times where we sampled random pair of [x,y] pixel values between (-p, p) related to the lesion diameter (d) by *$p = min(4, 0.1 * d)$*
+4) ROI was scaled *N~scale~* times from a range of scales *$s = min(0.1 * d, 0.4 * d)$*
+
+**total number of augmentation** was *N = N~rot~ X (1 + N~flip~ + N~trans~ + N~scale~)*
 
 
-## Objetivo
-O artigo propõe o uso de *Generative Adversarial Networks* (GANs) para a geração de imagens sintéticas de lesões hepáticas com o objetivo de aumentar conjuntos de dados limitados em aplicações médicas e melhorar o desempenho de redes neurais convolucionais (CNNs) na classificação de imagens.
+example of augmentation:
+![classic aug example](image-2.png)
 
-## Contexto
-Em imagens médicas, datasets rotulados são frequentemente escassos, dificultando o uso de redes profundas. As técnicas clássicas de *data augmentation* (como rotação, translação e escala) têm limitações por oferecerem pouca variabilidade. A proposta do artigo é que imagens geradas por GANs fornecem variabilidade adicional, enriquecendo o conjunto de dados e otimizando o processo de aprendizado.
+all the ROIs was resized to fit a uniform size of 64x64 pixels using bicubic interpolation
 
-## Dataset
-- 182 imagens de lesões hepáticas obtidas por tomografia computadorizada (CT)
-  - 53 cistos
-  - 64 metástases
-  - 65 hemangiomas
-- As lesões foram anotadas por radiologistas especialistas.
-- As ROIs foram extraídas e redimensionadas para 64×64 pixels.
+##### B. *Generative Adversarial Networks for Lesion Synthesis*
 
-## Arquitetura da CNN
-- Três pares de camadas convolucionais + *max pooling*
-- Duas camadas densas com função *softmax* na saída
-- Ativação ReLU, dropout de 0.5
-- Treinamento com *SGD* + *Nesterov momentum* (150 épocas)
+the generative model aims to learn the data distribution *p~data~* from a set of samples to further generate new samples from the learned distribution. 
 
-## GANs Utilizados
-- **DCGAN**: GAN convolucional para gerar imagens realistas por categoria.
-- **ACGAN**: GAN condicional com classificador auxiliar incorporado.
+they explored two variantes of GANs for synthesizing labeled lesions: DCGAN and ACGAN. one that generates labeled examples for each lesion class separately and the other that incorporates class conditioning to generate examples all at once.
 
-## Experimentos
+![two gan models](image-3.png)
 
-### Avaliação com Aumento de Dados
-- Comparação entre:
-  - Sem aumento de dados
-  - *Data augmentation* clássica (rotação, escala, etc.)
-  - GAN-based augmentation (DCGAN e ACGAN)
+they started with DCGAN (followed Radford architecture, where G and D are deep CNNs). the model consists of two neural networks that are trained simultaneously. 
 
-### Resultados
-- Aumentos progressivos do dataset mostraram ganho até a saturação (~78.6%)
-- Com imagens sintéticas via GANs:
-  - Acurácia aumentou para **85.7%**
-  - Sensibilidade e especificidade melhoraram para classes complexas
-- ACGAN obteve desempenho inferior ao DCGAN
+*looking the img*: discriminator (D) receives a sample *x* and outputs *D(x)* that is the probability of beign a real sample. generator (G) gets input samples from a simple distribution *p~z~* and maps *G(z)* to the image space of distribution *p~g~*, the goal of G is to achive *p~g~ = p~data~*.
 
-### Avaliação Visual
-- Imagens geradas com DCGAN foram difíceis de distinguir das reais por especialistas
-- Radiologistas classificaram corretamente ~77.8% das imagens (reais e sintéticas)
+adversarial networks are trained by optimizing the following loss function of a two player minimax game:
 
-### Visualização com t-SNE
-- Features extraídas com GAN resultaram em melhor separação visual entre as classes no espaço latente
+![optimization gan formula](image-4.png)
 
-### Comparação com Estado da Arte
-- O método superou o modelo BoVW-MI baseado em *visual words* e *mutual information*
-  - CNN com GAN obteve melhores métricas de acurácia, sensibilidade e especificidade
+the D is trained to maximize *D(x)* for images with *$x \sim p_{data}$* and to minimize D(x) for images with *$x \nsim p_{data}$*. the G produces images to fool D during training, such that *$D(G(z)) \sim p_{data}$*, so it aims to maximize D(G(z))
 
-## Conclusões
-- GANs são eficazes na geração de imagens sintéticas médicas realistas e úteis
-- Aumentam significativamente o desempenho de CNNs na classificação de lesões hepáticas
-- Aplicável a outros domínios médicos com escassez de dados
-- DCGAN foi mais eficaz que ACGAN neste contexto
-- Avaliação por especialistas confirmou realismo das imagens geradas
+**generator architecture**: it takes a vector of 100 random numbers (drawn from a uniform distribution as input) and outputs and a liver lesion image of size 64x64x1 (shown in figure below). the network consists of a fully connected layer 4 x 4 x 1024 and four *fractionally-strided convolutional* layers ("deconvolution" -> expands the pixels by inserting zeros in between them) to up-sample the image with a 5 x 5 kernel size. batch-normalization is applied to each layer, except for the output layer. normalizing responses to have zero mean and unit variance stabilizes the GAN learning and prevents collapsing all samples to a single point. ReLU activation functions are applied to all layers except the output layer (uses tanh act fun)
+
+![generator architecture](image-5.png)
+
+**discriminator architecture**: has a typical CNN architecture, with input image of size 64 x 64 x 1 and outputs a decision. the networks consist of four convolution layers with a kernel size of 5 x 5 and a full connected layer. strided convolutions are applied to each convolution layer to reduce spatial dimensionality instead of using pooling layers. batch-normalization is applied to each layer, except the input and output. leaky ReLU are applied to all except the output layer (uses Sigmoid function).
+
+**training procedure**: they trained the DCGAN to synthesize liver lesion ROIs for each lesion category separately. they used mini-batches of m=64 lesion ROI examples ${x_l}^{(1)}, \dots, {x_l}^{(m)}$ for each lesion type $ l \in (Cyst, Metastasis, Hemangioma)$ and m=64 noise samples $z^{(1)}, \dots, z^{(m)}$ drawn from uniform distribution between [-1, 1]. leaf of leaky ReLU was set to 0.2. weights were initialized to a zero-centered normal distribution with standard deviation of 0.02. learning rate of 0.0002 for 70 epochs.
+
+##### C. *Conditional Lesion Synthesis*
+
+the second variant of the GAN is the Auxiliary Classifier GAN (ACGAN). the conditional nature enable the model to be conditioned on external information to improve the generation quality. the discriminator contains an auxiliary decoder that outputs the class label. the generator has the class embedding in addition to the input noise samples. the ACGAN discriminator modified the DCGAN to have kernels of size 3x3 with strided convolutions every odd layer and incorporates a dropout of 0.5 in every layer except for the last layer.
+
+**training procedure**: are equal to the other described, except that the learning rate is 0.0001 for 50 epochs. the training inputs is a pair of (liver lesion ROI, corresponding labels), like $(x_{l}, y_{l})^{(1)}, \dot, (x_{l}, y_{l})^{(m)}$ for all lesion types $ l \in (Cyst, Metastasis, Hemangioma)$ and noise samples $z^{(1)}, \dots, z^{(m)}$ drawn from uniform distribution between [-1, 1]. 
+
+basic GAN discriminator maximization is the image below, where $ P(S|X) = D(X) $ and $X_{fake} = G(z)$.
+
+![discriminator maximization equation](image-6.png)
+
+the discriminator outputs $P(S|X)$, $P(C|X) = D(X)$ and $X_{fake} = G(c, z)$ where C is the class label. the loss has two parts:
+
+![ACGAN discriminator loss](image-7.png)
+
+the discriminator is trainde to maximize $ L_{s} + L_{c} $ and the generator is to maximize $ L_{c} - L_{s} $.
 
 ---
 
